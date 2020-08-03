@@ -6,7 +6,7 @@
         @play="play"
         @closePopup="closePopup"
       >
-        Вы продержались {{this.turn}} раундов!
+        Вы продержались {{this.turn - 1}} раундов!
       </Popup>
       <div class="menu">
         <GameInfo @play="play" :lose="lose" :turn="turn" />
@@ -44,10 +44,10 @@ export default {
   },
   data() {
     return {
+      inGame: false,
       difficulty: "normal",
       gameOrder: [],
       playerOrder: [],
-      blockButtons: true,
       lose: false,
       turn: 0,
       compTurn: null,
@@ -71,6 +71,7 @@ export default {
       }
     },
     play() {
+      this.inGame = true
       this.gameOrder = []
       this.playerOrder = []
       this.lose = false
@@ -84,12 +85,10 @@ export default {
       this.intervalId = setInterval(this.gameTurn, this.getInterval(this.difficulty))
     },
     gameTurn() {
-      this.blockButtons = true
       if (this.flash === this.turn) {
         clearInterval(this.intervalId)
         this.compTurn = false
         this.buttonColor = ""
-        this.blockButtons = false
       } if (this.compTurn) {
         this.buttonColor = ""
         setTimeout(() => {
@@ -132,36 +131,66 @@ export default {
       this.buttonColor = "Green"
     },
     oneClick() {
-      this.playerOrder.push(1)
-      this.check()
-      this.one()
-      setTimeout(() => {
-        this.buttonColor = ""
-      }, 300)
+      if (this.inGame) {
+        this.playerOrder.push(1)
+        this.check()
+        this.one()
+        setTimeout(() => {
+          this.buttonColor = ""
+        }, 300)
+      } else {
+        this.one()
+        setTimeout(() => {
+          this.buttonColor = ""
+        }, 300)
+      }
     },
     twoClick() {
-      this.playerOrder.push(2)
-      this.check()
-      this.two()
-      setTimeout(() => {
-        this.buttonColor = ""
-      }, 300)
+      if (this.inGame) {
+        this.playerOrder.push(2)
+        this.check()
+        this.two()
+        setTimeout(() => {
+          this.buttonColor = ""
+        }, 300)
+      } else {
+        this.two()
+        setTimeout(() => {
+          this.buttonColor = ""
+        }, 300)
+      }
+
     },
     threeClick() {
-      this.playerOrder.push(3)
-      this.check()
-      this.three()
-      setTimeout(() => {
-        this.buttonColor = ""
-      }, 300)
+      if (this.inGame) {
+        this.playerOrder.push(3)
+        this.check()
+        this.three()
+        setTimeout(() => {
+          this.buttonColor = ""
+        }, 300)
+      } else {
+        this.three()
+        setTimeout(() => {
+          this.buttonColor = ""
+        }, 300)
+      }
+
     },
     fourClick() {
-      this.playerOrder.push(4)
-      this.check()
-      this.four()
-      setTimeout(() => {
-        this.buttonColor = ""
-      }, 300)
+      if (this.inGame) {
+        this.playerOrder.push(4)
+        this.check()
+        this.four()
+        setTimeout(() => {
+          this.buttonColor = ""
+        }, 300)
+      } else {
+        this.four()
+        setTimeout(() => {
+          this.buttonColor = ""
+        }, 300)
+      }
     },
     check() {
       if (this.playerOrder[this.playerOrder.length - 1] !== this.gameOrder[this.playerOrder.length - 1])
@@ -175,10 +204,9 @@ export default {
       }
     },
     closePopup() {
-      this.difficulty = "normal",
+      this.inGame = false
       this.gameOrder = [],
       this.playerOrder = [],
-      this.blockButtons = true,
       this.lose = false,
       this.turn = 0,
       this.compTurn = null,
